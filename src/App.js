@@ -5,14 +5,16 @@ import { VictoryChart, VictoryBar, VictoryTheme, VictoryAxis } from "victory";
 import calc from "./calc";
 
 function App() {
-  const turns = 10000000;
+  const turns = 100000;
 
   const bob = calc(turns);
 
-  const props = {};
-  props.data = bob.map(thing => thing[0]);
+  console.log(bob);
 
-  props.label = bob.map(thing => thing[1]);
+  const props = {};
+  props.data = bob.tileStepCount.map(thing => thing[0]);
+
+  props.label = bob.tileStepCount.map(thing => thing[1]);
   // https://codepen.io/mkate/pen/WEZqmm?editors=1000
   const d3Container = useRef(null);
 
@@ -25,7 +27,7 @@ function App() {
         style={{ data: { fill: "#c43a31" } }}
         alignment="start"
         labels={d => d.datum.y.toFixed(2)}
-        data={bob.map(thing => {
+        data={bob.tileStepCount.map(thing => {
           return {
             // x: thing[1],
             y: (100 * thing[0]) / turns

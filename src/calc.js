@@ -1,43 +1,43 @@
 const tiles = [
-  "GO",
-  "OLD KENT ROAD",
-  "COMMUNITY CHEST",
-  "WHITECHAPEL ROAD",
-  "INCOME TAX",
-  "KINGS CROSS STATION",
-  "THE ANGEL ISLINGTON",
-  "CHANCE",
-  "EUSTON ROAD",
-  "PENTONVILLE ROAD",
-  "JAIL",
-  "PALL MALL",
-  "ELECTRIC COMPANY",
-  "WHITEHALL",
-  "NORTHUMBERLAND AVENUE",
-  "MARYLEBONE STATION",
-  "BOW STREET",
-  "COMMUNITY CHEST",
-  "MARLBOROUGH STREET",
-  "VINE STREET",
-  "FREE PARKING",
-  "THE STRAND",
-  "CHANCE",
-  "FLEET STREET",
-  "TRAFALGAR SQUARE",
-  "FENCHURCH STREET STATION",
-  "LEICESTER SQUARE",
-  "COVENTRY STREET",
-  "WATER WORKS",
-  "PICCADILLY",
-  "GO TO JAIL",
-  "REGENT STREET",
-  "OXFORD STREET",
-  "COMMUNITY CHEST",
-  "BOND STREET",
-  "LIVERPOOL STREET STATION",
-  "PARK LANE",
-  "LUXURY TAX",
-  "MAYFAIR"
+  { label: "GO", category: "" },
+  { label: "OLD KENT ROAD", category: "BROWN" },
+  { label: "COMMUNITY CHEST", category: "CARD" },
+  { label: "WHITECHAPEL ROAD", category: "BROWN" },
+  { label: "INCOME TAX", category: "TAX" },
+  { label: "KINGS CROSS STATION", category: "STATION" },
+  { label: "THE ANGEL ISLINGTON", category: "BLUE" },
+  { label: "CHANCE", category: "BLUE" },
+  { label: "EUSTON ROAD", category: "BLUE" },
+  { label: "PENTONVILLE ROAD", category: "BLUE" },
+  { label: "JAIL", category: "" },
+  { label: "PALL MALL", category: "PINK" },
+  { label: "ELECTRIC COMPANY", category: "UTILITY" },
+  { label: "WHITEHALL", category: "PINK" },
+  { label: "NORTHUMBERLAND AVENUE", category: "PINK" },
+  { label: "MARYLEBONE STATION", category: "STATION" },
+  { label: "BOW STREET", category: "ORANGE" },
+  { label: "COMMUNITY CHEST", category: "CARD" },
+  { label: "MARLBOROUGH STREET", category: "ORANGE" },
+  { label: "VINE STREET", category: "ORANGE" },
+  { label: "FREE PARKING", category: "" },
+  { label: "THE STRAND", category: "RED" },
+  { label: "CHANCE", category: "CARD" },
+  { label: "FLEET STREET", category: "RED" },
+  { label: "TRAFALGAR SQUARE", category: "RED" },
+  { label: "FENCHURCH STREET STATION", category: "STATION" },
+  { label: "LEICESTER SQUARE", category: "YELLOW" },
+  { label: "COVENTRY STREET", category: "YELLOW" },
+  { label: "WATER WORKS", category: "UTILITY" },
+  { label: "PICCADILLY", category: "YELLOW" },
+  { label: "GO TO JAIL", category: "" },
+  { label: "REGENT STREET", category: "GREEN" },
+  { label: "OXFORD STREET", category: "GREEN" },
+  { label: "COMMUNITY CHEST", category: "CARD" },
+  { label: "BOND STREET", category: "GREEN" },
+  { label: "LIVERPOOL STREET STATION", category: "STATION" },
+  { label: "PARK LANE", category: "PURPLE" },
+  { label: "LUXURY TAX", category: "BLUE" },
+  { label: "MAYFAIR", category: "BLUE" }
 ];
 
 let communityChestCards = [
@@ -110,8 +110,8 @@ function rollDice() {
 }
 
 // @Incomplete - test
-function indexOfTile(tile) {
-  return tiles.indexOf(tile);
+function indexOfTile(targetTile) {
+  return tiles.map(tile => tile.label).indexOf(targetTile);
 }
 
 // @Cleanup - this function shouldn't know what community chest or chance are
@@ -164,10 +164,10 @@ function takeTurn() {
     ].every(roll => roll)
   ) {
     playerCurrentTileIndex = takeCard("JAIL", playerCurrentTileIndex);
-  } else if (tiles[playerCurrentTileIndex] === "GO TO JAIL") {
+  } else if (tiles[playerCurrentTileIndex].label === "GO TO JAIL") {
     playerCurrentTileIndex = takeCard("JAIL", playerCurrentTileIndex);
   } else {
-    if (tiles[playerCurrentTileIndex] === "COMMUNITY CHEST") {
+    if (tiles[playerCurrentTileIndex].label === "COMMUNITY CHEST") {
       playerCurrentTileIndex = takeCard(
         communityChestCards[communityChestCardIndex],
         playerCurrentTileIndex
@@ -179,7 +179,7 @@ function takeTurn() {
         type: "COMMUNITY CHEST",
         value: communityChestCards[communityChestCardIndex]
       });
-    } else if (tiles[playerCurrentTileIndex] === "CHANCE") {
+    } else if (tiles[playerCurrentTileIndex].label === "CHANCE") {
       playerCurrentTileIndex = takeCard(
         chanceCards[chanceCardIndex],
         playerCurrentTileIndex
@@ -205,11 +205,16 @@ function simulateGame(turns) {
     takeTurn();
   }
 
-  var c = calculateTileStepCount().map(function(e, i) {
-    return [e, tiles[i]];
-  });
+  const tileStepCount = calculateTileStepCount().map((e, i) => [e, tiles[i]]);
+  const categoryStepCount = tileStepCount.reduce((sum, num) => {
+    if (sum[num.category] == null) {
+      sum[num.category] = 0;
+    }
 
-  return c;
+    sum[num.category]++;
+  }, {});
+
+  return { tileStepCount, categoryStepCount };
 }
 
 // @Incomplete - test

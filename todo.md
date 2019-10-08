@@ -1,3 +1,4 @@
+- test the shit
 - check the calculation is correct
 - graph for colour frequency
 - simulation UI
@@ -14,6 +15,7 @@
     - colour step frequency
 - set up hosting
 - analysis
+  - graph showing 1 millon plays
   - how does adding more players affect this
   - standupmaths compare - he ends games after n turns and plays x number of games, does this make a difference
   - how does the step frequency relate to the cost of the property
